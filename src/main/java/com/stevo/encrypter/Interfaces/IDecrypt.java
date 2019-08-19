@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.stevo.passwordencrypter.Interfaces;
+package com.stevo.encrypter.Interfaces;
 
 import javax.crypto.SecretKey;
 
@@ -11,6 +11,6 @@ import javax.crypto.SecretKey;
  *
  * @author Stevo
  */
-public interface IEncrypt {
-    byte[] encrypt(byte[] plaintext, SecretKey key, byte[] IV);
+public interface IDecrypt {
+    byte[] decrypt(byte[] cipherText, SecretKey key, byte[] IV);
 }

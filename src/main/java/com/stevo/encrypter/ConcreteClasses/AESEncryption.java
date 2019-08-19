@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.stevo.passwordencrypter.ConcreteClasses;
+package com.stevo.encrypter.ConcreteClasses;
 
-import com.stevo.passwordencrypter.Interfaces.ICrypt;
+import com.stevo.encrypter.Interfaces.ICrypt;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
