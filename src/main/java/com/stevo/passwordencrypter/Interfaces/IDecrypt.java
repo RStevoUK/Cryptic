@@ -5,10 +5,12 @@
  */
 package com.stevo.passwordencrypter.Interfaces;
 
+import javax.crypto.SecretKey;
+
 /**
  *
  * @author Stevo
  */
 public interface IDecrypt {
-    
+    byte[] decrypt(byte[] cipherText, SecretKey key, byte[] IV);
 }
