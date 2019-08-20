@@ -26,14 +26,14 @@ import javax.crypto.spec.SecretKeySpec;
 public class AESEncryption implements ICrypt {
 
     @Override
-    public byte[] encrypt(byte[] byteArray, SecretKey key, byte[] IV) {
+    public byte[] encrypt(byte[] byteArray, byte[] key, byte[] IV) {
         
         try {
             //Get Cipher Instance
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             
             //Create SecretKeySpec
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
             
             //Create IvParameterSpec
             IvParameterSpec ivSpec = new IvParameterSpec(IV);
@@ -57,14 +57,14 @@ public class AESEncryption implements ICrypt {
     }
 
     @Override
-    public byte[] decrypt(byte[] cipherText, SecretKey key, byte[] IV) {
+    public byte[] decrypt(byte[] cipherText, byte[] key, byte[] IV) {
         
         try {
             //Get Cipher Instance
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             
             //Create SecretKeySpec
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
             
             //Create IvParameterSpec
             IvParameterSpec ivSpec = new IvParameterSpec(IV);

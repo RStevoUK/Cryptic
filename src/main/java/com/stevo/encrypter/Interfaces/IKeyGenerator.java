@@ -9,6 +9,6 @@ package com.stevo.encrypter.Interfaces;
  *
  * @author Stevo
  */
-public interface ISalt {
-    
+public interface IKeyGenerator {
+    byte[] generateKey(String encryptionType, int keySize);
 }
