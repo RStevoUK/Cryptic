@@ -15,9 +15,9 @@ import java.security.SecureRandom;
 public class VectorGenerator implements IInitVectGen {
 
     @Override
-    public byte[] generateInitialisationVector() {
+    public byte[] generateInitialisationVector(int size) {
         
-        byte[] initVect = new byte[16];
+        byte[] initVect = new byte[size];
         SecureRandom random = new SecureRandom();
         random.nextBytes(initVect);
         

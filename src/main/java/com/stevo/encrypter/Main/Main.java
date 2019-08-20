@@ -25,7 +25,7 @@ public class Main {
         byte[] key = keyGen.generateKey("AES", 128);
         
         IInitVectGen vecGen = new VectorGenerator();
-        byte[] initVect = vecGen.generateInitialisationVector();
+        byte[] initVect = vecGen.generateInitialisationVector(16);
         
         String textToEncrypt = "Once upon a time I had a line of text.";
         

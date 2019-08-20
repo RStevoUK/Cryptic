@@ -10,5 +10,5 @@ package com.stevo.encrypter.Interfaces;
  * @author Stevo
  */
 public interface IInitVectGen {
-    byte[] generateInitialisationVector();
+    byte[] generateInitialisationVector(int size);
 }
