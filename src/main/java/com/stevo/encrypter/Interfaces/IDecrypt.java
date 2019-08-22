@@ -12,5 +12,5 @@ import javax.crypto.SecretKey;
  * @author Stevo
  */
 public interface IDecrypt {
-    byte[] decrypt(byte[] cipherText, byte[] key, byte[] IV);
+    byte[] decrypt(IEncryptedObject iEncryptedObject);
 }

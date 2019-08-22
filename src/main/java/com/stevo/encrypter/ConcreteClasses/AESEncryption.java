@@ -5,7 +5,12 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
+import com.stevo.encrypter.Interfaces.ICipher;
 import com.stevo.encrypter.Interfaces.ICrypt;
+import com.stevo.encrypter.Interfaces.IEncryptedObject;
+import com.stevo.encrypter.Interfaces.IInitVectGen;
+import com.stevo.encrypter.Interfaces.IKeyGenerator;
+import com.stevo.encrypter.Interfaces.ISecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -15,38 +20,65 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Stevo
  */
+
+@Component
 public class AESEncryption implements ICrypt {
 
+    private final ICipher iCipher;
+    
+    private final IInitVectGen initVect;
+    
+    private final ISecretKeySpec iSecretKeySpec;
+    
+    private final IKeyGenerator iKeyGenerator;
+    
+    @Autowired
+    public AESEncryption(ICipher iCipher, IInitVectGen initVect, 
+                         ISecretKeySpec iSecretKeySpec, IKeyGenerator iKeyGenerator)
+    {
+        this.iCipher = iCipher;
+        this.initVect = initVect;
+        this.iSecretKeySpec = iSecretKeySpec;
+        this.iKeyGenerator = iKeyGenerator;
+    }
+    
     @Override
-    public byte[] encrypt(byte[] byteArray, byte[] key, byte[] IV) {
+    public IEncryptedObject encrypt(byte[] byteArray, String cipherType) {
+        
+        String[] cipherTypeParsed = cipherType.split("/");
+        
+        int keySize = selectKeySize(cipherTypeParsed[0]);
         
         try {
             //Get Cipher Instance
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher cipher = iCipher.getCipherInstance(cipherType);
+            
+            byte[] key = iKeyGenerator.generateKey(cipherTypeParsed[0], keySize);
             
             //Create SecretKeySpec
-            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+            SecretKeySpec keySpec = iSecretKeySpec.getSecretKeySpec(key, cipherTypeParsed[0]);
             
             //Create IvParameterSpec
-            IvParameterSpec ivSpec = new IvParameterSpec(IV);
+            IvParameterSpec ivSpec = initVect.generateInitialisationVector(16);
             
             //Initialize Cipher for ENCRYPT_MODE
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             
             //Perform Encryption
-            return cipher.doFinal(byteArray);
+            byte[] result = cipher.doFinal(byteArray);
             
-        } catch (NoSuchAlgorithmException
-                | NoSuchPaddingException
-                | InvalidKeyException
+            return new EncryptedObject(cipherType, key, ivSpec.getIV(), result);
+            
+        } catch (InvalidKeyException
                 | InvalidAlgorithmParameterException
                 | IllegalBlockSizeException
                 | BadPaddingException ex) {
@@ -57,27 +89,25 @@ public class AESEncryption implements ICrypt {
     }
 
     @Override
-    public byte[] decrypt(byte[] cipherText, byte[] key, byte[] IV) {
+    public byte[] decrypt(IEncryptedObject iEncryptedObject) {
         
         try {
             //Get Cipher Instance
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher cipher = iCipher.getCipherInstance(iEncryptedObject.getEncryptionMethod());
             
             //Create SecretKeySpec
-            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+            SecretKeySpec keySpec = iSecretKeySpec.getSecretKeySpec(iEncryptedObject.getKey(), iEncryptedObject.getEncryptionMethod().split("/")[0]);
             
             //Create IvParameterSpec
-            IvParameterSpec ivSpec = new IvParameterSpec(IV);
+            IvParameterSpec ivSpec = initVect.getInitVectSpec(iEncryptedObject.getInitVect());
             
             //Initialize Cipher for DECRYPT_MODE
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
             
             //Perform Decryption
-            return cipher.doFinal(cipherText);
+            return cipher.doFinal(iEncryptedObject.getResult());
             
-        } catch (NoSuchAlgorithmException
-                | NoSuchPaddingException
-                | InvalidKeyException
+        } catch (InvalidKeyException
                 | InvalidAlgorithmParameterException
                 | IllegalBlockSizeException
                 | BadPaddingException ex) {
@@ -87,4 +117,16 @@ public class AESEncryption implements ICrypt {
         return null;
     }
     
+    private int selectKeySize(String algorithmUsed)
+    {
+        switch (algorithmUsed)
+        {
+            case "AES":
+                return 128;
+            case "DES":
+                return 56;
+            default:
+                return -1;
+        }
+    }
 }

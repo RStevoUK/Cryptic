@@ -5,13 +5,13 @@
  */
 package com.stevo.encrypter.Interfaces;
 
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
  * @author Stevo
  */
-public interface IInitVectGen {
-    IvParameterSpec generateInitialisationVector(int size);
-    IvParameterSpec getInitVectSpec(byte[] iv);
+public interface ISecretKeySpec {
+    
+    SecretKeySpec getSecretKeySpec(byte[] key, String cipherType);
 }

@@ -5,10 +5,12 @@
  */
 package com.stevo.encrypter.Interfaces;
 
+import javax.crypto.Cipher;
+
 /**
  *
  * @author Stevo
  */
-public interface ICipher<T> {
-    T getCypherInstance();
+public interface ICipher {
+    Cipher getCipherInstance(String cipherType);
 }

@@ -7,6 +7,7 @@ package com.stevo.encrypter.ConcreteClasses;
 
 import com.stevo.encrypter.Interfaces.IInitVectGen;
 import java.security.SecureRandom;
+import javax.crypto.spec.IvParameterSpec;
 
 /**
  *
@@ -15,13 +16,19 @@ import java.security.SecureRandom;
 public class VectorGenerator implements IInitVectGen {
 
     @Override
-    public byte[] generateInitialisationVector(int size) {
+    public IvParameterSpec generateInitialisationVector(int size) {
         
         byte[] initVect = new byte[size];
         SecureRandom random = new SecureRandom();
         random.nextBytes(initVect);
         
-        return initVect;
+        return new IvParameterSpec(initVect);
+    }
+
+    @Override
+    public IvParameterSpec getInitVectSpec(byte[] iv) {
+        
+        return new IvParameterSpec(iv);
     }
     
 }
