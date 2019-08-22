@@ -6,16 +6,13 @@
 package com.stevo.encrypter.Main;
 
 import com.stevo.encrypter.ConcreteClasses.AESEncryption;
-import com.stevo.encrypter.ConcreteClasses.SecretKeyGenerator;
-import com.stevo.encrypter.ConcreteClasses.VectorGenerator;
+import com.stevo.encrypter.ConcreteClasses.FileToBytes;
 import com.stevo.encrypter.InjectionContainer.Config;
 import com.stevo.encrypter.Interfaces.ICrypt;
 import com.stevo.encrypter.Interfaces.IEncryptedObject;
-import com.stevo.encrypter.Interfaces.IInitVectGen;
-import com.stevo.encrypter.Interfaces.IKeyGenerator;
+import java.io.File;
+import java.util.Arrays;
 import java.util.Base64;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -25,11 +22,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class Main {
     
-    @Autowired
-    public BeanFactory factory;
-    
     public static void main(String args[])
     {
+        File file = new File("C:\\Users\\Stevo\\Desktop\\test.jpg");
+        
+        FileToBytes toBytes = new FileToBytes();
+        
+        byte[] fileBytes = toBytes.fileToBytes(file);
+        
         ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
         
         String textToEncrypt = "Once upon a time I had a line of text.";
@@ -38,14 +38,25 @@ public class Main {
         
         ICrypt crypter = context.getBean(AESEncryption.class);
         
-        IEncryptedObject result = crypter.encrypt(textToEncrypt.getBytes(), "AES/CBC/PKCS5Padding");
+        IEncryptedObject result = crypter.encryptByteArray(fileBytes, "AES/CBC/PKCS5Padding");
+        
+        byte[] key1 = crypter.encryptFile("C:\\Users\\Stevo\\Desktop\\test.jpg", "C:\\Users\\Stevo\\Desktop\\test-encrypted.jpg", "AES/CBC/PKCS5Padding");
         
         System.out.println("Key Used For Encryption : " + Base64.getEncoder().encodeToString(result.getKey()));
         
         System.out.println("Encrypted Text : " + Base64.getEncoder().encodeToString(result.getResult()));
         
-        byte[] decryptResult = crypter.decrypt(result);
+        byte[] decryptResult = crypter.decryptByteArray(result);
+        
+        crypter.decryptFile("C:\\Users\\Stevo\\Desktop\\test-encrypted.jpg", key1);
         
         System.out.println("Decrypted Text : " + new String(decryptResult));
+        
+        Arrays.equals(fileBytes, decryptResult);
+        
+        if(Arrays.equals(fileBytes, decryptResult))
+        {
+            System.out.println("I'm equal");
+        }
     }
 }

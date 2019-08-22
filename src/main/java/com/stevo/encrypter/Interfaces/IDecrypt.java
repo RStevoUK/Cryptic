@@ -5,12 +5,11 @@
  */
 package com.stevo.encrypter.Interfaces;
 
-import javax.crypto.SecretKey;
-
 /**
  *
  * @author Stevo
  */
 public interface IDecrypt {
-    byte[] decrypt(IEncryptedObject iEncryptedObject);
+    byte[] decryptByteArray(IEncryptedObject iEncryptedObject);
+    void decryptFile(String filePathToDecrypt, byte[] secretKey);
 }
