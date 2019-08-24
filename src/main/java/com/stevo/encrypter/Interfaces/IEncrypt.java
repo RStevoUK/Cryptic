@@ -5,6 +5,8 @@
  */
 package com.stevo.encrypter.Interfaces;
 
+import java.io.File;
+
 /**
  *
  * @author Stevo
@@ -12,4 +14,5 @@ package com.stevo.encrypter.Interfaces;
 public interface IEncrypt {
     IEncryptedObject encryptByteArray(byte[] plaintext, String cipherType);
     byte[] encryptFile(String fileNameToEncrypt, String outputFileName, String cipherType);
+    byte[] encryptFile(File fileToEncrypt, String outputFileName, String cipherType);
 }

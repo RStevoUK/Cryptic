@@ -9,8 +9,8 @@ import com.stevo.encrypter.Interfaces.IKeyGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.SecretKey;
 import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 /**
  *
@@ -25,6 +25,18 @@ public class SecretKeyGenerator implements IKeyGenerator {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(encryptionType);
             keyGenerator.init(keySize);
             return keyGenerator.generateKey().getEncoded();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(SecretKeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+
+    @Override
+    public SecretKey generateKey(String encryptionType) {
+        
+        try {
+            return KeyGenerator.getInstance(encryptionType).generateKey();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(SecretKeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
