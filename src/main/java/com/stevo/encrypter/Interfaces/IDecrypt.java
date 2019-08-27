@@ -13,6 +13,7 @@ import java.io.File;
  */
 public interface IDecrypt {
     byte[] decryptByteArray(IEncryptedObject iEncryptedObject);
-    void decryptFile(String filePathToDecrypt, String filePathResult, byte[] secretKey);
-    void decryptFile(File fileToDecrypt, String filePathResult, byte[] secretKey);
+    void decryptFile(String filePathToDecrypt, File filePathResult, File secretKeyFile);
+    void decryptFile(File fileToDecrypt, File filePathResult, File secretKeyFile);
+    void decryptFile(File fileToDecrypt, File filePathResult, File secretKeyFile, OnProgressListener progress);
 }

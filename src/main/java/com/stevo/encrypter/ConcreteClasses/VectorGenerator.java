@@ -13,7 +13,7 @@ import javax.crypto.spec.IvParameterSpec;
  *
  * @author Stevo
  */
-public class VectorGenerator implements IInitVectGen {
+class VectorGenerator implements IInitVectGen {
 
     @Override
     public IvParameterSpec generateInitialisationVector(int size) {

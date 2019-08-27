@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.stevo.encrypter.InjectionContainer;
+package com.stevo.encrypter.ConcreteClasses;
 
 import com.stevo.encrypter.ConcreteClasses.CipherSelector;
+import com.stevo.encrypter.ConcreteClasses.FileExtensionParser;
+import com.stevo.encrypter.ConcreteClasses.FileNameGenerator;
 import com.stevo.encrypter.ConcreteClasses.SecretKeyGenerator;
 import com.stevo.encrypter.ConcreteClasses.SecretKeySpecService;
+import com.stevo.encrypter.ConcreteClasses.UIDGenerator;
 import com.stevo.encrypter.ConcreteClasses.VectorGenerator;
 import com.stevo.encrypter.Interfaces.ICipher;
+import com.stevo.encrypter.Interfaces.IFileExtensionParser;
+import com.stevo.encrypter.Interfaces.IFileNameGenerator;
 import com.stevo.encrypter.Interfaces.IInitVectGen;
 import com.stevo.encrypter.Interfaces.IKeyGenerator;
 import com.stevo.encrypter.Interfaces.ISecretKeySpec;
+import com.stevo.encrypter.Interfaces.IUIDGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import javax.crypto.Cipher;
@@ -57,30 +63,20 @@ public class Config {
     }
     
     @Bean
-    public byte[] generateAES128()
+    public IUIDGenerator getUIDGenerator()
     {
-        SecretKeyGenerator keyGen = new SecretKeyGenerator();
-        return keyGen.generateKey("AES", 128);
+        return new UIDGenerator();
     }
     
     @Bean
-    public SecretKeySpec getAESKey(byte[] generateAES128)
+    public IFileExtensionParser getFileExtensionParser()
     {
-        return new SecretKeySpec(generateAES128, "AES");
+        return new FileExtensionParser();
     }
     
     @Bean
-    public byte[] getSixteenBytes()
+    public IFileNameGenerator getFileNameGenerator(IUIDGenerator getUIDGenerator)
     {
-        return new byte[16];
-    }
-    
-    @Bean
-    public IvParameterSpec getIvSpec(byte[] getSixteenBytes)
-    {
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(getSixteenBytes);
-        
-        return new IvParameterSpec(getSixteenBytes);
+        return new FileNameGenerator(getUIDGenerator);
     }
 }

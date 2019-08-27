@@ -12,13 +12,11 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Stevo
  */
-public class SecretKeySpecService implements ISecretKeySpec {
+class SecretKeySpecService implements ISecretKeySpec {
 
     @Override
     public SecretKeySpec getSecretKeySpec(byte[] key, String cipherType) {
         
         return new SecretKeySpec(key, cipherType.split("/")[0]);
     }
-    
-    
 }

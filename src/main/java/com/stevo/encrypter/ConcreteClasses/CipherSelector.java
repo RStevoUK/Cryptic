@@ -18,7 +18,7 @@ import javax.crypto.NoSuchPaddingException;
  * @author Stevo
  */
 
-public class CipherSelector implements ICipher {
+class CipherSelector implements ICipher {
 
     @Override
     public Cipher getCipherInstance(String cipherType) {

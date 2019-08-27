@@ -13,6 +13,8 @@ import java.io.File;
  */
 public interface IEncrypt {
     IEncryptedObject encryptByteArray(byte[] plaintext, String cipherType);
-    byte[] encryptFile(String fileNameToEncrypt, String outputFileName, String cipherType);
-    byte[] encryptFile(File fileToEncrypt, String outputFileName, String cipherType);
+    void encryptFile(String fileNameToEncrypt, String outputFileName, String cipherType);
+    void encryptFile(String fileNameToEncrypt, String outputFileName, String cipherType, OnProgressListener progress);
+    void encryptFile(File fileToEncrypt, File outputFileName, String cipherType);
+    void encryptFile(File fileToEncrypt, File outputFileName, String cipherType, OnProgressListener progressListener);
 }

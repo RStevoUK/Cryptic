@@ -16,15 +16,15 @@ import javax.crypto.SecretKey;
  *
  * @author Stevo
  */
-public class SecretKeyGenerator implements IKeyGenerator {
+class SecretKeyGenerator implements IKeyGenerator {
 
     @Override
-    public byte[] generateKey(String encryptionType, int keySize) {
+    public SecretKey generateKey(String encryptionType, int keySize) {
         
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(encryptionType);
             keyGenerator.init(keySize);
-            return keyGenerator.generateKey().getEncoded();
+            return keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(SecretKeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }

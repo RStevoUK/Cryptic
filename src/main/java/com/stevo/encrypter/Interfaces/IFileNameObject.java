@@ -5,13 +5,11 @@
  */
 package com.stevo.encrypter.Interfaces;
 
-import javax.crypto.SecretKey;
-
 /**
  *
  * @author Stevo
  */
-public interface IKeyGenerator {
-    SecretKey generateKey(String encryptionType, int keySize);
-    SecretKey generateKey(String encryptionType);
+public interface IFileNameObject {
+    String getKeyFileName();
+    String getCryptedFileName();
 }

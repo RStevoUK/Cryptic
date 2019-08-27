@@ -11,7 +11,7 @@ import com.stevo.encrypter.Interfaces.IEncryptedObject;
  *
  * @author Stevo
  */
-public class EncryptedObject implements IEncryptedObject {
+class EncryptedObject implements IEncryptedObject {
     
     private final String encryptionMethod;
     
