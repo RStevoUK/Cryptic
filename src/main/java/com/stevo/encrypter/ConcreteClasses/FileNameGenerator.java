@@ -8,8 +8,6 @@ package com.stevo.encrypter.ConcreteClasses;
 import com.stevo.encrypter.Interfaces.IFileNameGenerator;
 import com.stevo.encrypter.Interfaces.IFileNameObject;
 import com.stevo.encrypter.Interfaces.IUIDGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  *

@@ -16,7 +16,13 @@ class FileExtensionParser implements IFileExtensionParser {
 
     @Override
     public String parseFileExtension(String fileName) {
-        return "." + FilenameUtils.getExtension(fileName);
+        
+        String ext = FilenameUtils.getExtension(fileName);
+        
+        if(!ext.isEmpty())
+            return "." + FilenameUtils.getExtension(fileName);
+        else
+            return null;
     }
     
 }
