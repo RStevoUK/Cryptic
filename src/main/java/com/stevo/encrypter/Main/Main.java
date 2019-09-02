@@ -8,12 +8,9 @@ package com.stevo.encrypter.Main;
 import com.stevo.encrypter.ConcreteClasses.Cryptic;
 import com.stevo.encrypter.ConcreteClasses.Config;
 import com.stevo.encrypter.Interfaces.ICrypt;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

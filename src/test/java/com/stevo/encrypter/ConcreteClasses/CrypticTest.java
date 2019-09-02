@@ -6,17 +6,12 @@
 package com.stevo.encrypter.ConcreteClasses;
 
 import com.stevo.encrypter.Interfaces.ICrypt;
-import com.stevo.encrypter.Interfaces.OnProgressListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import org.apache.commons.io.FilenameUtils;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
