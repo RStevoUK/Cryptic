@@ -5,6 +5,7 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
+import com.stevo.encrypter.Interfaces.IKeyGenerator;
 import java.security.InvalidParameterException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,37 +15,24 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Stevo
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class, loader = AnnotationConfigContextLoader.class)
 public class SecretKeyGeneratorTest {
     
-    private SecretKeyGenerator instance;
+    @Autowired
+    private IKeyGenerator instance;
     
-    public SecretKeyGeneratorTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-        
-        instance = new SecretKeyGenerator();
-    }
-    
-    @After
-    public void tearDown() {
-        
-        instance = null;
-    }
+    public SecretKeyGeneratorTest() { }
 
     /**
      * Test of generateKey method, of class SecretKeyGenerator.

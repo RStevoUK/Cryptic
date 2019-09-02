@@ -5,37 +5,31 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
+import com.stevo.encrypter.Interfaces.IUIDGenerator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Stevo
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class, loader = AnnotationConfigContextLoader.class)
 public class UIDGeneratorTest {
     
-    public UIDGeneratorTest() {
-    }
+    @Autowired
+    private IUIDGenerator instance;
     
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
+    public UIDGeneratorTest() { }
 
     /**
      * Test of generateUID method, of class UIDGenerator.
@@ -43,7 +37,6 @@ public class UIDGeneratorTest {
     @Test
     public void testGenerateUID() {
         System.out.println("generateUID");
-        UIDGenerator instance = new UIDGenerator();
         String result = instance.generateUID();
         
         int expResult = 36;

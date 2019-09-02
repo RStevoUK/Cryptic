@@ -5,6 +5,7 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
+import com.stevo.encrypter.Interfaces.IInitVectGen;
 import java.security.SecureRandom;
 import javax.crypto.spec.IvParameterSpec;
 import org.junit.After;
@@ -14,31 +15,24 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Stevo
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class, loader = AnnotationConfigContextLoader.class)
 public class VectorGeneratorTest {
     
-    public VectorGeneratorTest() {
-    }
+    @Autowired
+    private IInitVectGen instance;
     
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
+    public VectorGeneratorTest() { }
 
     /**
      * Test of generateInitialisationVector method, of class VectorGenerator.
@@ -47,7 +41,6 @@ public class VectorGeneratorTest {
     public void testGenerateInitialisationVector() {
         System.out.println("generateInitialisationVector");
         int size = 128;
-        VectorGenerator instance = new VectorGenerator();
         
         IvParameterSpec result = instance.generateInitialisationVector(size);
         
@@ -64,8 +57,6 @@ public class VectorGeneratorTest {
         SecureRandom random = new SecureRandom();
         byte[] iv = new byte[16];
         random.nextBytes(iv);
-        
-        VectorGenerator instance = new VectorGenerator();
         
         IvParameterSpec result = instance.getInitVectSpec(iv);
         

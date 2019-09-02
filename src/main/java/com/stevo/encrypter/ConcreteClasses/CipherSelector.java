@@ -7,7 +7,6 @@ package com.stevo.encrypter.ConcreteClasses;
 
 import com.stevo.encrypter.Interfaces.ICipher;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;

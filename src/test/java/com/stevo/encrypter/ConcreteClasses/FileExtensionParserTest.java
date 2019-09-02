@@ -5,37 +5,27 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import com.stevo.encrypter.Interfaces.IFileExtensionParser;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Stevo
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class, loader = AnnotationConfigContextLoader.class)
 public class FileExtensionParserTest {
     
-    public FileExtensionParserTest() {
-    }
+    @Autowired
+    private IFileExtensionParser instance;
     
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
+    public FileExtensionParserTest() { }
 
     /**
      * Test of parseFileExtension method, of class FileExtensionParser.
@@ -44,7 +34,6 @@ public class FileExtensionParserTest {
     public void testParseFileExtensionCorrectReturn() {
         System.out.println("parseFileExtension");
         String fileName = "test.txt";
-        FileExtensionParser instance = new FileExtensionParser();
         String expResult = ".txt";
         String result = instance.parseFileExtension(fileName);
         assertEquals(expResult, result);
@@ -57,7 +46,6 @@ public class FileExtensionParserTest {
     public void testParseFileExtensionNoExtensionReturnsNull() {
         System.out.println("parseFileExtension");
         String fileName = "test";
-        FileExtensionParser instance = new FileExtensionParser();
         String expResult = null;
         String result = instance.parseFileExtension(fileName);
         assertEquals(expResult, result);

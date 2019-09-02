@@ -223,7 +223,7 @@ public class Cryptic implements ICrypt {
             //Initialise the buffered output stream so that big files can be 
             //successfully written.
             
-            String testPath = filePathResult.getPath() + "\\" + "-unencrypted" + parsedUUID + fileExtString;
+            String testPath = filePathResult.getPath() + "\\" + "unencrypted-" + parsedUUID + fileExtString;
             
             //Remove any hidden characters from the testPath
             testPath = testPath.replaceAll("[^\\p{Graph}\n\r\t ]", "");

@@ -18,24 +18,7 @@ import static org.junit.Assert.*;
  */
 public class FileNameObjectTest {
     
-    public FileNameObjectTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
+    public FileNameObjectTest() { }
 
     /**
      * Test of getKeyFileName method, of class FileNameObject.

@@ -5,55 +5,38 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
-import java.security.NoSuchAlgorithmException;
+import com.stevo.encrypter.Interfaces.ICipher;
 import javax.crypto.Cipher;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Stevo
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class, loader = AnnotationConfigContextLoader.class)
 public class CipherSelectorTest {
     
-    private CipherSelector instance;
+    @Autowired
+    private ICipher instance;
     
-    public CipherSelectorTest() {
-        
-        
-    }
+    public CipherSelectorTest() { }
     
-    @BeforeClass
-    public static void setUpClass() {
-        
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-        
-        instance = new CipherSelector();
-    }
-    
-    @After
-    public void tearDown() {
-        
-        instance = null;
-    }
-
     /**
      * Test of getCipherInstance method, of class CipherSelector.
      */
     @Test
-    public void testGetCipherInstance() {
+    public void cipher_Instance_Null_Return_If_Incorrect_Cipher_Specified() {
         String cipherType = "";
         Cipher expResult = null;
         Cipher result = instance.getCipherInstance(cipherType);
