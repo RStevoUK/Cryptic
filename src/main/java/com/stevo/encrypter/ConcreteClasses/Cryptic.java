@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class Cryptic implements ICrypt {
+class Cryptic implements ICrypt {
 
     private final ICipher iCipher;
     
