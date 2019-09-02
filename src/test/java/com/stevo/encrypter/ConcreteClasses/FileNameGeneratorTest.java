@@ -9,20 +9,22 @@ import com.stevo.encrypter.Interfaces.IFileNameGenerator;
 import com.stevo.encrypter.Interfaces.IFileNameObject;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Stevo
  */
-@Component
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class, loader = AnnotationConfigContextLoader.class)
 public class FileNameGeneratorTest {
     
     @Autowired
@@ -48,7 +50,7 @@ public class FileNameGeneratorTest {
     }
 
     /**
-     * Test of generateFileNameObject method, of class FileNameGenerator.
+     * Test of getKeyFileName method, of injected type IFileNameGenerator.
      */
     @Test
     public void testGenerateKeyFileNamePrefix() {
@@ -58,13 +60,33 @@ public class FileNameGeneratorTest {
     }
     
     /**
-    * Test of generateFileNameObject method, of class FileNameGenerator.
+    * Test of getKeyFileName method, of injected type IFileNameGenerator.
     */
     @Test
     public void testGenerateKeyFileNameSuffix() {
         System.out.println("testGenerateKeyFileNameSuffix");
         IFileNameObject result = instance.generateFileNameObject();
         assertTrue(result.getKeyFileName().contains(".cryptickey"));
+    }
+    
+    /**
+    * Test of getCryptedFileName method, of injected type IFileNameGenerator.
+    */
+    @Test
+    public void testGenerateContentFileNamePrefix() {
+        System.out.println("testGenerateContentFileNamePrefix");
+        IFileNameObject result = instance.generateFileNameObject();
+        assertTrue(result.getCryptedFileName().contains("Cryptic-File-"));
+    }
+    
+    /**
+    * Test of getCryptedFileName method, of injected type IFileNameGenerator.
+    */
+    @Test
+    public void testGenerateContentFileNameSuffix() {
+        System.out.println("testGenerateContentFileNameSuffix");
+        IFileNameObject result = instance.generateFileNameObject();
+        assertTrue(result.getCryptedFileName().contains(".cryptic"));
     }
     
 }

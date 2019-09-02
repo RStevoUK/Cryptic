@@ -7,7 +7,6 @@ package com.stevo.encrypter.ConcreteClasses;
 
 import com.stevo.encrypter.Interfaces.ICipher;
 import com.stevo.encrypter.Interfaces.ICrypt;
-import com.stevo.encrypter.Interfaces.IEncryptedObject;
 import com.stevo.encrypter.Interfaces.IFileExtensionParser;
 import com.stevo.encrypter.Interfaces.IFileNameGenerator;
 import com.stevo.encrypter.Interfaces.IFileNameObject;
@@ -28,10 +27,8 @@ import java.security.InvalidKeyException;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +40,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-class Cryptic implements ICrypt {
+public class Cryptic implements ICrypt {
 
     private final ICipher iCipher;
     
@@ -56,6 +53,12 @@ class Cryptic implements ICrypt {
     private final IFileExtensionParser iFileExtensionParser;
     
     private final IFileNameGenerator iFileNameGenerator;
+    
+    private static final int FILE_STREAM_BUFFER_SIZE = 4096;
+    
+    private static final int ENCRYPTION_TYPE_HEADER_RESERVE_BYTES = 64;
+    
+    private static final int FILE_EXTENSION_HEADER_RESERVE_BYTES = 8;
     
     @Autowired
     private Cryptic(ICipher iCipher, 
@@ -72,133 +75,11 @@ class Cryptic implements ICrypt {
         this.iFileExtensionParser = iFileExtensionParser;
         this.iFileNameGenerator = iFileNameGenerator;
     }
-    
-    @Override
-    public IEncryptedObject encryptByteArray(byte[] byteArray, String cipherType) {
-        
-        String[] cipherTypeParsed = cipherType.split("/");
-        
-        int keySize = selectKeySize(cipherTypeParsed[0]);
-        
-        try {
-            //Get Cipher Instance
-            Cipher cipher = iCipher.getCipherInstance(cipherType);
-            
-            byte[] key = iKeyGenerator.generateKey(cipherTypeParsed[0], keySize).getEncoded();
-            
-            //Create SecretKeySpec
-            SecretKeySpec keySpec = iSecretKeySpec.getSecretKeySpec(key, cipherTypeParsed[0]);
-            
-            //Create IvParameterSpec
-            IvParameterSpec ivSpec = initVect.generateInitialisationVector(selectIVSize(cipherTypeParsed[0]));
-            
-            //Initialize Cipher for ENCRYPT_MODE
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-            
-            //Perform Encryption
-            byte[] result = cipher.doFinal(byteArray);
-            
-            return new EncryptedObject(cipherType, key, ivSpec.getIV(), result);
-            
-        } catch (InvalidKeyException
-                | InvalidAlgorithmParameterException
-                | IllegalBlockSizeException
-                | BadPaddingException ex) {
-            Logger.getLogger(Cryptic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;
-    }
-
-    @Override
-    public byte[] decryptByteArray(IEncryptedObject iEncryptedObject) {
-        
-        try {
-            //Get Cipher Instance
-            Cipher cipher = iCipher.getCipherInstance(iEncryptedObject.getEncryptionMethod());
-            
-            //Create SecretKeySpec
-            SecretKeySpec keySpec = iSecretKeySpec.getSecretKeySpec(iEncryptedObject.getKey(), iEncryptedObject.getEncryptionMethod().split("/")[0]);
-            
-            //Create IvParameterSpec
-            IvParameterSpec ivSpec = initVect.getInitVectSpec(iEncryptedObject.getInitVect());
-            
-            //Initialize Cipher for DECRYPT_MODE
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-            
-            //Perform Decryption
-            return cipher.doFinal(iEncryptedObject.getResult());
-            
-        } catch (InvalidKeyException
-                | InvalidAlgorithmParameterException
-                | IllegalBlockSizeException
-                | BadPaddingException ex) {
-            Logger.getLogger(Cryptic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;
-    }
-    
-    private int selectKeySize(String algorithmUsed)
-    {
-        switch (algorithmUsed)
-        {
-            case "AES":
-                return 128;
-            case "DES":
-                return 56;
-            case "DESede":
-                return 168;
-            default:
-                return -1;
-        }
-    }
-
-    @Override
-    public void encryptFile(String fileNameToEncrypt, String outputFileName, String cipherType) {
-        
-        encryptFile(new File(fileNameToEncrypt), new File(outputFileName), cipherType);
-    }
-
-    @Override
-    public void decryptFile(String filePathToDecrypt, File filePathResult, File secretKeyFile) {
-        
-        decryptFile(new File(filePathToDecrypt), filePathResult, secretKeyFile);
-    }
 
     @Override
     public void encryptFile(File fileToEncrypt, File outputFileName, String cipherType) {
         
         encryptFile(fileToEncrypt, outputFileName, cipherType, null);
-    }
-
-    private double calculateProgress(double bytesRead, double fileSize)
-    {
-        double progress = (bytesRead / fileSize) * 100;
-        
-        DecimalFormat df = new DecimalFormat("00.00");
-        
-        progress = Double.valueOf(df.format(progress));
-        
-        if(progress > 100)
-            return 100;
-        else
-            return progress;
-    }
-    
-    private int selectIVSize(String algorithmUsed)
-    {
-        switch (algorithmUsed)
-        {
-            case "AES":
-                return 16;
-            case "DES":
-                return 8;
-            case "DESede":
-                return 8;
-            default:
-                return -1;
-        }
     }
         
     @Override
@@ -207,46 +88,10 @@ class Cryptic implements ICrypt {
         decryptFile(fileToDecrypt, filePathResult, secretKeyFile, null);
     }
     
-    private String parseEncryptionType(FileInputStream fileIn) throws IOException
-    {
-        byte[] enType = new byte[64];
-
-        fileIn.read(enType);
-
-        return new String(enType);
-    }
-    
-    private byte[] parseInitialisationVector(FileInputStream fileIn, String encryptionType) throws IOException
-    {
-        byte[] fileIv = new byte[selectIVSize(encryptionType.split("/")[0])];
-
-        fileIn.read(fileIv);
-        
-        return fileIv;
-    }
-    
-    private byte[] parseFileExtension(FileInputStream fileIn) throws IOException
-    {
-        byte[] fileExt = new byte[8];
-
-        fileIn.read(fileExt);
-        
-        return fileExt;
-    }
-    
-    private Cipher initialiseCipherInstance(String encryptionType, byte[] secretKey, byte[] fileIv, int mode) throws InvalidKeyException, InvalidAlgorithmParameterException
-    {
-        Cipher cipher = iCipher.getCipherInstance(encryptionType);
-
-        SecretKeySpec keySpec = iSecretKeySpec.getSecretKeySpec(secretKey, encryptionType.split("/")[0]);
-
-        cipher.init(mode, keySpec, new IvParameterSpec(fileIv));
-        
-        return cipher;
-    }
-
     @Override
     public void encryptFile(File fileToEncrypt, File outputFileName, String cipherType, OnProgressListener progressListener) {
+        
+        validateEncryptionType(cipherType);
         
         String fileExtension = iFileExtensionParser.parseFileExtension(fileToEncrypt.getAbsolutePath());
         
@@ -271,13 +116,13 @@ class Cryptic implements ICrypt {
             
             //Create a 64 bit byte array to be used as a header 
             //for the encrypted file to store the encryption type used
-            byte[] enType = new byte[64];
+            byte[] enType = new byte[ENCRYPTION_TYPE_HEADER_RESERVE_BYTES];
             
             //Convert the String representation of the chosen 
             //encryption type and copy to the newly created byte array
             System.arraycopy(cipherType.getBytes(), 0, enType, 0, cipherType.getBytes().length);
             
-            byte[] fileExt = new byte[8];
+            byte[] fileExt = new byte[FILE_EXTENSION_HEADER_RESERVE_BYTES];
             
             System.arraycopy(fileExtension.getBytes(), 0, fileExt, 0, fileExtension.getBytes().length);
             
@@ -307,7 +152,7 @@ class Cryptic implements ICrypt {
                 int bytes;
                 
                 //Initalise byte array for buffer to read 4096 byte blocks
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[FILE_STREAM_BUFFER_SIZE];
                 
                 double fileSize = fileToEncrypt.length();
                 
@@ -318,10 +163,12 @@ class Cryptic implements ICrypt {
                 //to the output stream
                 while((bytes = cis.read(buffer)) != -1) {
                   cryptedFileOut.write(buffer, 0, bytes);
-                  count += 512;
                   
                   if(progressListener != null)
+                  {
+                    count += (buffer.length / 8);
                     progressListener.onProgress("Encrypting", calculateProgress(count, fileSize));
+                  }
                 }
                 
                 //Clean up just for safekeeping
@@ -340,13 +187,9 @@ class Cryptic implements ICrypt {
     }
 
     @Override
-    public void encryptFile(String fileNameToEncrypt, String outputFileName, String cipherType, OnProgressListener progress) {
-        
-        encryptFile(new File(fileNameToEncrypt), new File(outputFileName), cipherType, progress);
-    }
-
-    @Override
     public void decryptFile(File fileToDecrypt, File filePathResult, File secretKeyFile, OnProgressListener progress) {
+        
+        String parsedUUID = parseUUID(fileToDecrypt);
         
         byte[] secretKey = null;
         
@@ -380,8 +223,9 @@ class Cryptic implements ICrypt {
             //Initialise the buffered output stream so that big files can be 
             //successfully written.
             
-            String testPath = filePathResult.getPath() + "\\" + "unencrypted" + fileExtString;
+            String testPath = filePathResult.getPath() + "\\" + "-unencrypted" + parsedUUID + fileExtString;
             
+            //Remove any hidden characters from the testPath
             testPath = testPath.replaceAll("[^\\p{Graph}\n\r\t ]", "");
             
             //String testingPath = "C:\\Users\\Stevo\\Desktop\\unencrypted.zip";
@@ -397,7 +241,7 @@ class Cryptic implements ICrypt {
                 int bytes;
                 
                 //Initalise byte array for buffer to read 4096 byte blocks
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[FILE_STREAM_BUFFER_SIZE];
                 
                 double fileSize = fileToDecrypt.length();
                 
@@ -409,10 +253,11 @@ class Cryptic implements ICrypt {
                 while ((bytes = cipherIn.read(buffer, 0, buffer.length)) != -1) {
                     os.write(buffer, 0, bytes);
                     
-                    count += 512;
-                    
                     if(progress != null)
+                    {
+                        count += (buffer.length / 8);
                         progress.onProgress("Decrypting", calculateProgress(count, fileSize));
+                    }
                 }
                 
                 //Clean up just for safekeeping
@@ -424,5 +269,107 @@ class Cryptic implements ICrypt {
         } catch (IOException | InvalidKeyException | InvalidAlgorithmParameterException exception) {
             Logger.getLogger(Cryptic.class.getName()).log(Level.SEVERE, null, exception);
         }
+    }
+
+    private double calculateProgress(double bytesRead, double fileSize)
+    {
+        double progress = (bytesRead / fileSize) * 100;
+        
+        DecimalFormat df = new DecimalFormat("00.00");
+        
+        progress = Double.valueOf(df.format(progress));
+        
+        if(progress > 100)
+            return 100;
+        else
+            return progress;
+    }
+        
+    private int selectKeySize(String algorithmUsed)
+    {
+        switch (algorithmUsed)
+        {
+            case "AES":
+                return 128;
+            case "DES":
+                return 56;
+            case "DESede":
+                return 168;
+            default:
+                return -1;
+        }
+    }
+        
+    private int selectIVSize(String algorithmUsed)
+    {
+        switch (algorithmUsed)
+        {
+            case "AES":
+                return 16;
+            case "DES":
+                return 8;
+            case "DESede":
+                return 8;
+            default:
+                return -1;
+        }
+    }
+    
+    private String parseEncryptionType(FileInputStream fileIn) throws IOException
+    {
+        byte[] enType = new byte[ENCRYPTION_TYPE_HEADER_RESERVE_BYTES];
+
+        fileIn.read(enType);
+
+        return new String(enType);
+    }
+    
+    private byte[] parseInitialisationVector(FileInputStream fileIn, String encryptionType) throws IOException
+    {
+        byte[] fileIv = new byte[selectIVSize(encryptionType.split("/")[0])];
+
+        fileIn.read(fileIv);
+        
+        return fileIv;
+    }
+    
+    private byte[] parseFileExtension(FileInputStream fileIn) throws IOException
+    {
+        byte[] fileExt = new byte[FILE_EXTENSION_HEADER_RESERVE_BYTES];
+
+        fileIn.read(fileExt);
+        
+        return fileExt;
+    }
+    
+    private Cipher initialiseCipherInstance(String encryptionType, byte[] secretKey, byte[] fileIv, int mode) throws InvalidKeyException, InvalidAlgorithmParameterException
+    {
+        Cipher cipher = iCipher.getCipherInstance(encryptionType);
+
+        SecretKeySpec keySpec = iSecretKeySpec.getSecretKeySpec(secretKey, encryptionType.split("/")[0]);
+
+        cipher.init(mode, keySpec, initVect.getInitVectSpec(fileIv));
+        
+        return cipher;
+    }
+
+    private void validateEncryptionType(String encryptionType)
+    {
+        if(!(encryptionType.equals("AES/CBC/PKCS5Padding") || 
+             encryptionType.equals("DES/CBC/PKCS5Padding") || 
+             encryptionType.equals("DESede/CBC/PKCS5Padding")))
+        {
+            try {
+                throw new Exception("Invalid encryption type specified");
+            } catch (Exception ex) {
+                Logger.getLogger(Cryptic.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    private String parseUUID(File fileToDecrypt) {
+        
+        String parsedString = fileToDecrypt.getName().replace("Cryptic-File-", "");
+        return parsedString.replace(".cryptic", "");
     }
 }

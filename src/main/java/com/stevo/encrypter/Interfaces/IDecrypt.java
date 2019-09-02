@@ -12,8 +12,6 @@ import java.io.File;
  * @author Stevo
  */
 public interface IDecrypt {
-    byte[] decryptByteArray(IEncryptedObject iEncryptedObject);
-    void decryptFile(String filePathToDecrypt, File filePathResult, File secretKeyFile);
     void decryptFile(File fileToDecrypt, File filePathResult, File secretKeyFile);
     void decryptFile(File fileToDecrypt, File filePathResult, File secretKeyFile, OnProgressListener progress);
 }

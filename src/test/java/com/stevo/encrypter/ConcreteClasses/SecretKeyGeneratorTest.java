@@ -5,13 +5,15 @@
  */
 package com.stevo.encrypter.ConcreteClasses;
 
+import java.security.InvalidParameterException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -48,11 +50,37 @@ public class SecretKeyGeneratorTest {
      * Test of generateKey method, of class SecretKeyGenerator.
      */
     @Test
-    public void testGenerateKey_Key_Size() {
+    public void testGenerateKey_Key_Size_AES() {
         System.out.println("generateKey");
         String encryptionType = "AES";
         int keySize = 128;
         int expResult = 16;
+        SecretKey result = instance.generateKey(encryptionType, keySize);
+        assertEquals(expResult, result.getEncoded().length);
+    }
+    
+    /**
+    * Test of generateKey method, of class SecretKeyGenerator.
+    */
+    @Test
+    public void testGenerateKey_Key_Size_DES() {
+        System.out.println("generateKey");
+        String encryptionType = "DES";
+        int keySize = 56;
+        int expResult = 8;
+        SecretKey result = instance.generateKey(encryptionType, keySize);
+        assertEquals(expResult, result.getEncoded().length);
+    }
+    
+    /**
+    * Test of generateKey method, of class SecretKeyGenerator.
+    */
+    @Test
+    public void testGenerateKey_Key_Size_DESede() {
+        System.out.println("generateKey");
+        String encryptionType = "DESede";
+        int keySize = 168;
+        int expResult = 24;
         SecretKey result = instance.generateKey(encryptionType, keySize);
         assertEquals(expResult, result.getEncoded().length);
     }
@@ -68,6 +96,73 @@ public class SecretKeyGeneratorTest {
         String expResult = "AES";
         SecretKey result = instance.generateKey(encryptionType, keySize);
         assertEquals(expResult, result.getAlgorithm());
+    }
+
+    /**
+     * Test of generateKey method, of class SecretKeyGenerator.
+     */
+    @Test(expected = InvalidParameterException.class)
+    public void testGenerateKey_String_int() {
+        System.out.println("generateKey");
+        String encryptionType = "AES";
+        int keySize = 0;
+        instance = new SecretKeyGenerator();
+        instance.generateKey(encryptionType, keySize);
+    }
+
+    /**
+     * Test of generateKey method, of class SecretKeyGenerator.
+     */
+    @Test
+    public void testGenerateKey_String() {
+        System.out.println("generateKey");
+        String encryptionType = "";
+        instance = new SecretKeyGenerator();
+        SecretKey expResult = null;
+        SecretKey result = instance.generateKey(encryptionType);
+        assertEquals(expResult, result);
+    }
+    
+    /**
+    * Test of generateKey method, of class SecretKeyGenerator.
+    */
+    @Test
+    public void testGenerateKeyLength_AES() {
+        System.out.println("generateKey");
+        String encryptionType = "AES";
+        instance = new SecretKeyGenerator();
+        int expKeyLength = 16;
+        SecretKey result = instance.generateKey(encryptionType);
+        int length = result.getEncoded().length;
+        assertEquals(expKeyLength, length);
+    }
+    
+    /**
+    * Test of generateKey method, of class SecretKeyGenerator.
+    */
+    @Test
+    public void testGenerateKeyLength_DES() {
+        System.out.println("generateKey");
+        String encryptionType = "DES";
+        instance = new SecretKeyGenerator();
+        int expKeyLength = 8;
+        SecretKey result = instance.generateKey(encryptionType);
+        int length = result.getEncoded().length;
+        assertEquals(expKeyLength, length);
+    }
+    
+    /**
+    * Test of generateKey method, of class SecretKeyGenerator.
+    */
+    @Test
+    public void testGenerateKeyLength_AESede() {
+        System.out.println("generateKey");
+        String encryptionType = "DESede";
+        instance = new SecretKeyGenerator();
+        int expKeyLength = 24;
+        SecretKey result = instance.generateKey(encryptionType);
+        int length = result.getEncoded().length;
+        assertEquals(expKeyLength, length);
     }
     
 }
