@@ -49,3 +49,14 @@ iCrypt.decryptFile([File object to decrypt], [Output directory to save decrypted
     System.out.println(description + " " + progress);
 });
 ```
+
+--------------------
+MORE INFO
+--------------------
+AES - When AES encryption is specified a 128-bit key is used with a 16-bit Initialisation Vector. (The Initialisation Vector is generated using Javas SecureRandom class)
+
+DES - When DES encryption is specified a 56-bit key is used with a 8-bit Initialisation Vector. (The Initialisation Vector is generated using Javas SecureRandom class)
+
+DESede - When DESede encryption is specified a 168-bit key is used with a 8-bit Initialisation Vector. (The Initialisation Vector is generated using Javas SecureRandom class)
+
+The largest file size that the program has been tested with was 2.2GB in size and was a compressed .zip file.
