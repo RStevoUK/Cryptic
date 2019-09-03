@@ -6,11 +6,11 @@ library you will need to clone this repo and import the project using the follow
 syntax:
 
 ```
-<modelVersion>4.0.0</modelVersion>
-<groupId>com.stevo</groupId>
-<artifactId>Cryptic</artifactId>
-<version>1.0-SNAPSHOT</version>
-<packaging>jar</packaging>
+<dependency>
+    <groupId>com.stevo</groupId>
+    <artifactId>Cryptic</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
 --------------------
