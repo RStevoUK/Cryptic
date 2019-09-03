@@ -5,11 +5,13 @@ This library is not currently available on the Maven central repository. If you 
 library you will need to clone this repo and import the project using the following import 
 syntax:
 
+```
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.stevo</groupId>
 <artifactId>Cryptic</artifactId>
 <version>1.0-SNAPSHOT</version>
 <packaging>jar</packaging>
+```
 
 --------------------
 DESCRIPTION
@@ -33,6 +35,7 @@ The three type of encryption that can be specified are:
 "DES/CBC/PKCS5Padding"
 "DESede/CBC/PKCS5Padding"
 
+```
 Crypter crypter = new Crypter();
 ICrypt iCrypt = crypter.getCrypter();
 
@@ -45,3 +48,4 @@ iCrypt.decryptFile([File object to decrypt], [Output directory to save decrypted
 
     System.out.println(description + " " + progress);
 });
+```
